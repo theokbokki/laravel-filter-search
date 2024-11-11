@@ -1,0 +1,29 @@
+{
+    "name": "theokbokki/laravel-filter-search",
+    "description": "A powerful syntax for filtering models through a search box (Similar to Github projects)",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Theokbokki\\LaravelFilterSearch\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Théo Léonet",
+            "email": "hello@theoo.dev"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^9.0|^10.0|^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Theokbokki\\LaravelFilterSearch\\LaravelFilterSearchServiceProvider"
+            ]
+        }
+    }
+}
