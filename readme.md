@@ -56,7 +56,7 @@ You can simply put a search term like normal and get what you want
 
 | Search terms   | Result   |
 |---|---|
-| <div>   | Will return the records containg the string "<div>" in the fields specified in `defaultSearchFields()` |
+| test   | Will return the records containg the string "test" in the fields specified in `defaultSearchFields()` |
 
 ## Field search
 You can use all the fields speicifed in `allowedSearchFields()` to make the search more precise
@@ -78,7 +78,7 @@ You can also add an hyphen before the field or keyword to reverse the search
 | Search terms   | Result   |
 |---|---|
 | -title:Test   | Will return any record not containg the string "test" in the title field |
-| -<div>   | Will return any record not containg the string "<div>" in the fields specified in `defaultSearchFields()` |
+| -test   | Will return any record not containg the string "test" in the fields specified in `defaultSearchFields()` |
 
 ## What if my search contains space, commas or colons? 
 You can add double quotes around your search to handle space, commas and colons.
