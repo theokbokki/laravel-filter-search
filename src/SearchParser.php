@@ -4,7 +4,7 @@ namespace Theokbokki\LaravelFilterSearch;
 
 class SearchParser
 {
-    /** @return array<int,SearchCondition> */
+    /** @return array<int,array<int,SearchCondition>> */
     public function parse(string $search): array
     {
         $conditions = [];
@@ -18,14 +18,16 @@ class SearchParser
                 $isNegative = str_starts_with($colonSplit[0], '-') && $colonSplit[0][0] !== '"';
                 $values = preg_split('/,(?=(?:[^"]*"[^"]*")*[^"]*$)/', $colonSplit[1]);
 
+                $fieldConditions = [];
                 foreach ($values as $value) {
-                    $conditions[] = new SearchCondition($field, trim($value, '"'), $isNegative);
+                    $fieldConditions[] = new SearchCondition($field, trim($value, '"'), $isNegative);
                 }
+                $conditions[] = $fieldConditions;
             } else {
                 $term = trim($part, '"');
                 $isNegative = str_starts_with($term, '-') && $term[0] !== '"';
                 $term = ltrim($term, '-');
-                $conditions[] = new SearchCondition('default', $term, $isNegative);
+                $conditions[] = [new SearchCondition('default', $term, $isNegative)];
             }
         }
 

@@ -1,2 +1,12 @@
-/vendor/
+/vendor
+/node_modules
+.idea
+.DS_Store
+Thumbs.db
 composer.lock
+package-lock.json
+yarn.lock
+.phpunit.result.cache
+.php-cs-fixer.cache
+.swp
+*.map

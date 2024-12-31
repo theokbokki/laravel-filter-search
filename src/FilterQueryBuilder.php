@@ -16,45 +16,49 @@ class FilterQueryBuilder
     }
 
     /**
-     * @param array<int,SearchCondition> $conditions
+     * @param array<int,array<int,SearchCondition>> $conditions
      * @param array<int,string> $allowedFields
      * @param array<int,string> $defaultFields
      */
     public function applyConditions(array $conditions, array $allowedFields, array $defaultFields): Builder
     {
-        foreach ($conditions as $condition) {
-            if ($condition->field === 'default') {
-                $this->applyDefaultCondition($condition, $defaultFields);
-            } elseif ($condition->matchesAllowedFields($allowedFields)) {
-                $this->applyFieldCondition($condition);
-            }
+        foreach ($conditions as $conditionGroup) {
+            $this->query->where(function ($query) use ($conditionGroup, $allowedFields, $defaultFields) {
+                foreach ($conditionGroup as $condition) {
+                    if ($condition->field === 'default') {
+                        $this->applyDefaultCondition($query, $condition, $defaultFields);
+                    } elseif ($condition->matchesAllowedFields($allowedFields)) {
+                        $this->applyFieldCondition($query, $condition);
+                    }
+                }
+            });
         }
 
         return $this->query;
     }
 
-    protected function applyFieldCondition(SearchCondition $condition): void
+    /** @param Builder<Model> $query */
+    protected function applyFieldCondition(Builder $query, SearchCondition $condition): void
     {
         if ($condition->isNegative) {
-            $this->query->orWhere(function ($query) use ($condition) {
-                $query->where($condition->field, 'not like', '%' . $condition->value . '%');
-            });
-        } else {
-            $this->query->orWhere($condition->field, 'like', '%' . $condition->value . '%');
+            $query->whereNot($condition->field, 'like', '%' . $condition->value . '%');
+
+            return;
         }
+
+        $query->orWhere($condition->field, 'like', '%' . $condition->value . '%');
     }
 
-    /** @param array<int,string> $fields */
-    protected function applyDefaultCondition(SearchCondition $condition, array $fields): void
+    /**
+ * @param Builder<Model> $query @param array<int,string> $fields */
+    protected function applyDefaultCondition(Builder $query, SearchCondition $condition, array $fields): void
     {
-        $this->query->where(function ($query) use ($condition, $fields) {
-            foreach ($fields as $field) {
-                if($condition->isNegative) {
-                    $query->where($field, 'not like', '%' . $condition->value . '%');
-                } else {
-                    $query->orWhere($field, 'like', '%' . $condition->value . '%');
-                }
+        foreach ($fields as $field) {
+            if ($condition->isNegative) {
+                $query->whereNot($field, 'like', '%' . $condition->value . '%');
+            } else {
+                $query->orWhere($field, 'like', '%' . $condition->value . '%');
             }
-        });
+        }
     }
 }
